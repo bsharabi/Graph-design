@@ -38,7 +38,7 @@ public class Main {
 
         DirectedWeightedGraph g = new Graph(nodesMap, edgesMap);
         System.out.println(g);
-        //Test for
+//        //Test for
         System.out.println("------------- getNode--------------");
         System.out.println(g.getNode(0));
         System.out.println(g.getNode(10));
@@ -47,9 +47,13 @@ public class Main {
         System.out.println(g.getEdge(0, 3));
         System.out.println(g.getEdge(0, 16));
 
-       // Problem
+        // Problem
         System.out.println("------------- addNode --------------");
         g.addNode(new Node(new GeoPosition(1, 2, 3), 4));
+        System.out.println(g);
+
+        System.out.println("------------- connect --------------");
+        g.connect(4, 2, 6);
         System.out.println(g);
 
 
@@ -69,15 +73,16 @@ public class Main {
         while (it.hasNext())
             System.out.println(it.next());
 
-//        System.out.println("------------- removeNode--------------");
-//        NodeData d = g.removeNode(1);
-//        System.out.println(g);
-//        System.out.println(d);
+        //add error
+        System.out.println("------------- removeNode--------------");
+        NodeData d = g.removeNode(2);
+        System.out.println(g);
 
-//        System.out.println("------------- removeEdge--------------");
-//        EdgeData e = g.removeEdge(0, 1);
-//        System.out.println(g);
-//        System.out.println(e);
+        //add error
+        System.out.println("------------- removeEdge--------------");
+        EdgeData e = g.removeEdge(0, 1);
+        System.out.println(g);
+        System.out.println(e);
 
 
         System.out.println("------------- nodeSize--------------");

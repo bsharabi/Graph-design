@@ -3,6 +3,7 @@ package Departments;
 import api.DirectedWeightedGraph;
 import api.EdgeData;
 import api.NodeData;
+import com.sun.jdi.request.ExceptionRequest;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -54,8 +55,8 @@ public class Graph implements DirectedWeightedGraph {
     public void setNodesMap(Map<Integer, NodeData> nodesMap) {
         this.nodesMap = nodesMap;
     }
-    //-------------------------------- Function -------------------------------------
 
+    //-------------------------------- Function -------------------------------------
     public void init(String path) {
 
 
@@ -85,6 +86,21 @@ public class Graph implements DirectedWeightedGraph {
     //O(1)
     @Override
     public void connect(int src, int dest, double w) {
+        try {
+            if (nodesMap.containsKey(src) && nodesMap.containsKey(dest)) {
+                Point2D p = new Point(src, dest);
+                EdgeData edge = new Edge(src, w, dest);
+                edgesMap.put(new Point(src, dest), edge);
+                Node node = (Node) nodesMap.get(src);
+                node.getEdgeMapOut().put(p, edge);
+                node = (Node) nodesMap.get(dest);
+                node.getEdgeMapIn().put(p, edge);
+            } else
+                throw new Exception("not");
+        } catch (Exception e) {
+            System.out.println("not");
+        }
+
 
     }
 
@@ -111,20 +127,24 @@ public class Graph implements DirectedWeightedGraph {
     //O(k)
     @Override
     public NodeData removeNode(int key) {
+
         Node temp = (Node) nodesMap.remove(key);
         Map<Point2D, EdgeData> mapIn = temp.getEdgeMapIn();
         Map<Point2D, EdgeData> mapOut = temp.getEdgeMapOut();
+
         mapIn.forEach((k, v) -> {
             Point2D p = k;
-            edgesMap.remove(k);
-            Node node = (Node) nodesMap.get(p.getY());
-            node.getEdgeMapOut().remove(k);
+            int src = (int) p.getX();
+            edgesMap.remove(p);
+            Node node = (Node) nodesMap.get(src);
+            node.getEdgeMapOut().remove(p);
         });
         mapOut.forEach((k, v) -> {
             Point2D p = k;
-            edgesMap.remove(k);
-            Node node = (Node) nodesMap.get(p.getX());
-            node.getEdgeMapOut().remove(k);
+            int dest = (int) p.getY();
+            edgesMap.remove(p);
+            Node node = (Node) nodesMap.get(dest);
+            node.getEdgeMapIn().remove(p);
         });
         return temp;
     }
@@ -138,7 +158,7 @@ public class Graph implements DirectedWeightedGraph {
             Node node = (Node) nodesMap.get(src);
             node.getEdgeMapOut().remove(p);
             node = (Node) nodesMap.get(dest);
-            node.getEdgeListIn().remove(p);
+            node.getEdgeMapIn().remove(p);
             return edge;
         }
         return null;

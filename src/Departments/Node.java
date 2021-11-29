@@ -114,6 +114,6 @@ public class Node implements NodeData {
 
     @Override
     public String toString() {
-        return "Node{" + "edgeMapOut=" + edgeMapOut.values().stream().toList() + "edgeMapIn=" + edgeMapIn.values().stream().toList() + "}\n";
+        return "Node{"+id + " edgeMapOut=" + edgeMapOut.values().stream().toList() + "edgeMapIn=" + edgeMapIn.values().stream().toList() + "}\n";
     }
 }

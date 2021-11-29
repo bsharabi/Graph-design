@@ -1,11 +1,11 @@
 Ex1/
 OOP_2021/
 outFile/
-GUI/
+src/GUI
 out/
-Departments/MapListener.java
+src/Departments/MapListener.java
 *.pyc
-Main.java
+src/Main.java
 data/Data_GUI.json
 out*.csv
 _pycache

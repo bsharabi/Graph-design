@@ -12,6 +12,7 @@ import java.security.KeyStore;
 import java.util.*;
 
 public abstract class JsonReader {
+
     public static JsonObject getJson(String path) throws FileNotFoundException {
         Gson g = new Gson();
 //        TypeToken<Object> map = (TypeToken<Object>) g.fromJson(new FileReader(path), TypeToken.class).getType();

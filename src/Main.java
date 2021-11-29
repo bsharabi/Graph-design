@@ -47,9 +47,10 @@ public class Main {
         System.out.println(g.getEdge(0, 3));
         System.out.println(g.getEdge(0, 16));
 
-        //Problem
-//        System.out.println("------------- addNode --------------");
-//        g.addNode(new Node(new GeoPosition(1, 2, 3), 4));
+       // Problem
+        System.out.println("------------- addNode --------------");
+        g.addNode(new Node(new GeoPosition(1, 2, 3), 4));
+        System.out.println(g);
 
 
         System.out.println("------------- nodeIter--------------");

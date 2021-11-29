@@ -3,6 +3,7 @@ package Departments;
 import api.EdgeData;
 import api.GeoLocation;
 import api.NodeData;
+
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.List;
@@ -15,30 +16,43 @@ public class Node implements NodeData {
     private int id;
     private String info;
     private int tag;
-    private Map<Point2D,EdgeData> edgeMapOut;
-    private Map<Point2D,EdgeData> edgeMapIn;
+    private Map<Point2D, EdgeData> edgeMapOut;
+    private Map<Point2D, EdgeData> edgeMapIn;
 
 
     // -------------------------- Constructor --------------------------------------
     public Node(GeoLocation pos, int id) {
         this.position3D = pos;
         this.id = id;
-        this.edgeMapIn=new HashMap<>();
-        this.edgeMapOut=new HashMap<>();
+        this.edgeMapIn = new HashMap<>();
+        this.edgeMapOut = new HashMap<>();
     }
 
     public Node() {
         this.position3D = null;
-        this.edgeMapIn=new HashMap<>();
-        this.edgeMapOut=new HashMap<>();
+        this.edgeMapIn = new HashMap<>();
+        this.edgeMapOut = new HashMap<>();
     }
+
     //--------------------------- Getter && Setter --------------------------------
     public List<EdgeData> getEdgeListOut() {
-        return edgeMapOut.values().stream().toList();
+        if (!edgeMapOut.isEmpty())
+            return edgeMapOut.values().stream().toList();
+        return null;
     }
 
     public List<EdgeData> getEdgeListIn() {
-        return edgeMapIn.values().stream().toList();
+        if (!edgeMapIn.isEmpty())
+            return edgeMapIn.values().stream().toList();
+        return null;
+    }
+
+    public void setEdgeMapOut(Map<Point2D, EdgeData> edgeMapOut) {
+        this.edgeMapOut = edgeMapOut;
+    }
+
+    public void setEdgeMapIn(Map<Point2D, EdgeData> edgeMapIn) {
+        this.edgeMapIn = edgeMapIn;
     }
 
     public Map<Point2D, EdgeData> getEdgeMapOut() {
@@ -98,4 +112,8 @@ public class Node implements NodeData {
         this.tag = t;
     }
 
+    @Override
+    public String toString() {
+        return "Node{" + "edgeMapOut=" + edgeMapOut.values().stream().toList() + "edgeMapIn=" + edgeMapIn.values().stream().toList() + "}\n";
+    }
 }

@@ -1,9 +1,11 @@
 package Departments;
+
 import api.EdgeData;
+
 import java.awt.*;
 import java.awt.geom.Point2D;
 
-public class Edge implements EdgeData {
+public class Edge implements EdgeData, Comparable<Point2D> {
 
     private int src;
     private double w;
@@ -41,7 +43,7 @@ public class Edge implements EdgeData {
     }
 
     public Point2D getP() {
-        return p;
+        return p != null ? p : null;
     }
 
     //-------------------------------- Override -------------------------------------
@@ -80,4 +82,15 @@ public class Edge implements EdgeData {
         this.tag = t;
     }
 
+    @Override
+    public int compareTo(Point2D o) {
+        if (this.p.equals(o))
+            return 0;
+        return -1;
+    }
+
+    @Override
+    public String toString() {
+        return "Edge{" + "src=" + src + ", w=" + w + ", dest=" + dest + "}\n";
+    }
 }

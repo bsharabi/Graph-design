@@ -25,10 +25,24 @@ public class Graph implements DirectedWeightedGraph {
         this.mCount = 0;
     }
 
-    public Graph(Map<Point2D, EdgeData> edgeMap, Map<Integer, NodeData> nodeMap) {
+    public Graph(Map<Integer, NodeData> nodeMap, Map<Point2D, EdgeData> edgeMap) {
         this.edgesMap = edgeMap;
         this.nodesMap = nodeMap;
         this.mCount = 0;
+        //O(edge.size())
+        edgesMap.forEach((k, v) -> {
+            int src = (int) k.getX();
+            int dest = (int) k.getY();
+            try {
+                Node node = (Node) nodesMap.get(src);
+                node.getEdgeMapOut().put(k, v);
+                node = (Node) nodesMap.get(dest);
+                node.getEdgeMapIn().put(k, v);
+            } catch (Exception e) {
+                System.out.println("Src or Dest node");
+            }
+
+        });
     }
 
     //--------------------------- Getter && Setter --------------------------------
@@ -149,5 +163,10 @@ public class Graph implements DirectedWeightedGraph {
     @Override
     public int getMC() {
         return this.mCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Graph{" + "edgesMap=" + edgesMap.values().stream().toList() + ", nodesMap=" + nodesMap.values().stream().toList() + "}\n";
     }
 }

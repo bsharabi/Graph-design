@@ -1,0 +1,72 @@
+Ex1/
+OOP_2021/
+outFile/
+GUI/
+out/
+Departments/MapListener.java
+*.pyc
+Main.java
+data/Data_GUI.json
+out*.csv
+_pycache
+*.log
+*.zip
+*.gitignore
+*.cpp
+*.txt
+out_b*.csv
+app.py
+__pycache__
+outLogSimulator
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf

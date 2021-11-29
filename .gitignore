@@ -6,7 +6,7 @@ out/
 src/Departments/MapListener.java
 *.pyc
 src/Main.java
-data/Data_GUI.json
+src/data/Data_GUI.json
 out*.csv
 _pycache
 *.log

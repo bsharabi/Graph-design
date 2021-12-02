@@ -35,4 +35,9 @@ public class GeoPosition implements GeoLocation {
         double c = Math.abs(g.z() - z);
         return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2) + Math.pow(c, 2));
     }
+
+    @Override
+    public String toString() {
+        return x + ", " + y + ", " + z;
+    }
 }

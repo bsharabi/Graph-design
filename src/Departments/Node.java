@@ -3,7 +3,6 @@ package Departments;
 import api.EdgeData;
 import api.GeoLocation;
 import api.NodeData;
-
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.List;
@@ -16,11 +15,24 @@ public class Node implements NodeData {
     private int id;
     private String info;
     private int tag;
+    private double w;
     private Map<Point2D, EdgeData> edgeMapOut;
     private Map<Point2D, EdgeData> edgeMapIn;
 
 
     // -------------------------- Constructor --------------------------------------
+    public Node(String pos, int id) {
+        String[] p = pos.split(",");
+        double x = Double.parseDouble(p[0]);
+        double y = Double.parseDouble(p[1]);
+        double z = Double.parseDouble(p[2]);
+
+        this.position3D = new GeoPosition(x, y, z);
+        this.id = id;
+        this.edgeMapIn = new HashMap<>();
+        this.edgeMapOut = new HashMap<>();
+    }
+
     public Node(GeoLocation pos, int id) {
         this.position3D = pos;
         this.id = id;
@@ -79,17 +91,16 @@ public class Node implements NodeData {
     @Override
     public void setLocation(GeoLocation p) {
         this.position3D = p;
-
     }
 
     @Override
     public double getWeight() {
-        return 0;
+        return this.w;
     }
 
     @Override
     public void setWeight(double w) {
-
+        this.w = w;
     }
 
     @Override
@@ -114,6 +125,6 @@ public class Node implements NodeData {
 
     @Override
     public String toString() {
-        return "Node{"+id + " edgeMapOut=" + edgeMapOut.values().stream().toList() + "edgeMapIn=" + edgeMapIn.values().stream().toList() + "}\n";
+        return "Node{" + id + " edgeMapOut=" + edgeMapOut.values().stream().toList() + "edgeMapIn=" + edgeMapIn.values().stream().toList() + "}\n";
     }
 }

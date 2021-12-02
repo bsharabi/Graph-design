@@ -1,3 +1,4 @@
+import Departments.AlgoDWG;
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
 
@@ -11,10 +12,7 @@ public class Ex2 {
      * @return
      */
     public static DirectedWeightedGraph getGrapg(String json_file) {
-        DirectedWeightedGraph ans = null;
-        // ****** Add your code here ******
-        //
-        // ********************************
+        DirectedWeightedGraph ans = getGrapgAlgo(json_file).getGraph();
         return ans;
     }
     /**
@@ -23,10 +21,8 @@ public class Ex2 {
      * @return
      */
     public static DirectedWeightedGraphAlgorithms getGrapgAlgo(String json_file) {
-        DirectedWeightedGraphAlgorithms ans = null;
-        // ****** Add your code here ******
-        //
-        // ********************************
+        DirectedWeightedGraphAlgorithms ans = new AlgoDWG();
+        ans.load(json_file);
         return ans;
     }
     /**
@@ -36,6 +32,7 @@ public class Ex2 {
      */
     public static void runGUI(String json_file) {
         DirectedWeightedGraphAlgorithms alg = getGrapgAlgo(json_file);
+
         // ****** Add your code here ******
         //
         // ********************************

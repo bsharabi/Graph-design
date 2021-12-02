@@ -3,8 +3,6 @@ package Departments;
 import api.DirectedWeightedGraph;
 import api.EdgeData;
 import api.NodeData;
-import com.sun.jdi.request.ExceptionRequest;
-
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
@@ -42,7 +40,6 @@ public class Graph implements DirectedWeightedGraph {
             } catch (Exception e) {
                 System.out.println("Src or Dest node");
             }
-
         });
     }
 
@@ -56,10 +53,16 @@ public class Graph implements DirectedWeightedGraph {
         this.nodesMap = nodesMap;
     }
 
-    //-------------------------------- Function -------------------------------------
-    public void init(String path) {
+    public Map<Point2D, EdgeData> getEdgesMap() {
+        if (!edgesMap.isEmpty())
+            return Map.copyOf(edgesMap);
+        return null;
+    }
 
-
+    public Map<Integer, NodeData> getNodesMap() {
+        if (!nodesMap.isEmpty())
+            return Map.copyOf(nodesMap);
+        return null;
     }
 
     //-------------------------------- Override -------------------------------------
@@ -79,7 +82,7 @@ public class Graph implements DirectedWeightedGraph {
     //O(1)
     @Override
     public void addNode(NodeData n) {
-        if (n != null && !nodesMap.containsValue(n))
+        if (n != null && !nodesMap.containsKey(n.getKey()))
             nodesMap.put(n.getKey(), n);
     }
 
@@ -100,8 +103,6 @@ public class Graph implements DirectedWeightedGraph {
         } catch (Exception e) {
             System.out.println("not");
         }
-
-
     }
 
     @Override
@@ -121,13 +122,18 @@ public class Graph implements DirectedWeightedGraph {
     @Override
     public Iterator<EdgeData> edgeIter(int node_id) {
         Node n = (Node) nodesMap.get(node_id);
-        return n.getEdgeListOut().iterator();
+        try {
+            return n.getEdgeListOut().iterator();
+        } catch (Exception e) {
+            System.out.println("Error");
+
+        }
+        return null;
     }
 
     //O(k)
     @Override
     public NodeData removeNode(int key) {
-
         Node temp = (Node) nodesMap.remove(key);
         Map<Point2D, EdgeData> mapIn = temp.getEdgeMapIn();
         Map<Point2D, EdgeData> mapOut = temp.getEdgeMapOut();

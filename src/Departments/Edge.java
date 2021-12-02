@@ -16,13 +16,9 @@ public class Edge implements EdgeData, Comparable<Point2D> {
 
     // -------------------------- Constructor --------------------------------------
 
-    public Edge() {
-        this.p = new Point();
-    }
-
-    public Edge(int src, double weight, int dest) {
+    public Edge(int src, double w, int dest) {
         this.src = src;
-        this.w = weight;
+        this.w = w;
         this.dest = dest;
         this.p = new Point(src, dest);
     }
@@ -89,8 +85,16 @@ public class Edge implements EdgeData, Comparable<Point2D> {
         return -1;
     }
 
+    //    @Override
+//    public String toString() {
+//        return " {\n" +
+//                "\"src\":"+src+" ,\n" +
+//                "\"w\": "+w+",\n" +
+//                "\"dest\": "+dest+"\n" +
+//                "}";
+//    }
     @Override
     public String toString() {
-        return "Edge{" + "src=" + src + ", w=" + w + ", dest=" + dest + "}\n";
+        return "Edge{" + src + " " + w + " " + dest + "}";
     }
 }

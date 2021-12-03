@@ -24,18 +24,9 @@ public class Edge implements EdgeData, Comparable<Point2D> {
     }
 
     //--------------------------- Getter && Setter --------------------------------
-    public void setSrc(int src) {
-        this.src = src;
-        p.setLocation(src, this.dest);
-    }
 
     public void setW(double weight) {
         this.w = weight;
-    }
-
-    public void setDest(int dest) {
-        this.dest = dest;
-        p.setLocation(this.src, dest);
     }
 
     public Point2D getP() {
@@ -85,16 +76,15 @@ public class Edge implements EdgeData, Comparable<Point2D> {
         return -1;
     }
 
-    //    @Override
-//    public String toString() {
-//        return " {\n" +
-//                "\"src\":"+src+" ,\n" +
-//                "\"w\": "+w+",\n" +
-//                "\"dest\": "+dest+"\n" +
-//                "}";
-//    }
     @Override
     public String toString() {
-        return "Edge{" + src + " " + w + " " + dest + "}";
+
+        return "    {\n" +
+                "      \"src\":" + src + ",\n" +
+                "      \"w\":" + w + ",\n" +
+                "      \"dest\":" + dest + "\n" +
+                "    }";
+
     }
+
 }

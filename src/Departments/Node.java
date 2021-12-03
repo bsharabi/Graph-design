@@ -3,6 +3,7 @@ package Departments;
 import api.EdgeData;
 import api.GeoLocation;
 import api.NodeData;
+
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,6 @@ public class Node implements NodeData {
         double x = Double.parseDouble(p[0]);
         double y = Double.parseDouble(p[1]);
         double z = Double.parseDouble(p[2]);
-
         this.position3D = new GeoPosition(x, y, z);
         this.id = id;
         this.edgeMapIn = new HashMap<>();
@@ -48,31 +48,48 @@ public class Node implements NodeData {
 
     //--------------------------- Getter && Setter --------------------------------
     public List<EdgeData> getEdgeListOut() {
-        if (!edgeMapOut.isEmpty())
+        try {
+            if (edgeMapOut == null)
+                throw new NullPointerException("There is no edge object or the object is not defined or empty.");
             return edgeMapOut.values().stream().toList();
+        } catch (NullPointerException e) {
+            System.out.println(e);
+        }
         return null;
     }
 
     public List<EdgeData> getEdgeListIn() {
-        if (!edgeMapIn.isEmpty())
+        try {
+            if (edgeMapIn == null)
+                throw new NullPointerException("There is no edge object or the object is not defined or empty.");
             return edgeMapIn.values().stream().toList();
+        } catch (NullPointerException e) {
+            System.out.println(e);
+        }
         return null;
     }
 
-    public void setEdgeMapOut(Map<Point2D, EdgeData> edgeMapOut) {
-        this.edgeMapOut = edgeMapOut;
-    }
-
-    public void setEdgeMapIn(Map<Point2D, EdgeData> edgeMapIn) {
-        this.edgeMapIn = edgeMapIn;
-    }
-
     public Map<Point2D, EdgeData> getEdgeMapOut() {
-        return edgeMapOut;
+        try {
+            if (edgeMapOut == null )
+                throw new NullPointerException("The Map does not exist or the EdgesMapOut is not found");
+            return edgeMapOut;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
     }
 
     public Map<Point2D, EdgeData> getEdgeMapIn() {
-        return edgeMapIn;
+        try {
+            if (edgeMapIn == null)
+                throw new NullPointerException("The Map does not exist or the EdgesMapIn is not found");
+            return edgeMapIn;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+
     }
 
     //-------------------------------- Override -------------------------------------
@@ -83,9 +100,7 @@ public class Node implements NodeData {
 
     @Override
     public GeoLocation getLocation() {
-        if (this.position3D == null)
-            return null;
-        else return this.position3D;
+        return this.position3D;
     }
 
     @Override
@@ -123,8 +138,16 @@ public class Node implements NodeData {
         this.tag = t;
     }
 
+
+    public String print() {
+        return "Node{" + id + " edgeMapOut=" + edgeMapOut.values().stream().toList() + "edgeMapIn=" + edgeMapIn.values().stream().toList() + "}\n";
+    }
+
     @Override
     public String toString() {
-        return "Node{" + id + " edgeMapOut=" + edgeMapOut.values().stream().toList() + "edgeMapIn=" + edgeMapIn.values().stream().toList() + "}\n";
+        return "{\n" +
+                "      \"pos\": " + position3D + ",\n" +
+                "      \"id\":" + id + "\n" +
+                "    }";
     }
 }

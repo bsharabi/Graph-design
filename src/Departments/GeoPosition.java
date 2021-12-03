@@ -2,6 +2,8 @@ package Departments;
 
 import api.GeoLocation;
 
+import java.text.MessageFormat;
+
 public class GeoPosition implements GeoLocation {
     private double x;
     private double y;
@@ -38,6 +40,6 @@ public class GeoPosition implements GeoLocation {
 
     @Override
     public String toString() {
-        return x + ", " + y + ", " + z;
+        return MessageFormat.format("{0}{1,number,#.##############},{2,number,#.##############},{3}.0{4}", '"', x, y, z, '"');
     }
 }

@@ -1,13 +1,20 @@
 package Tests;
 
+import Departments.GeoPosition;
+import Departments.Node;
+import api.GeoLocation;
+import api.NodeData;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class NodeTest {
 
+    NodeData node = new Node(new GeoPosition(1, 2, 3), 0);
+
     @Test
     void getEdgeListOut() {
+
     }
 
     @Test
@@ -24,10 +31,14 @@ class NodeTest {
 
     @Test
     void getKey() {
+        assertEquals(node.getKey(),0);
     }
 
     @Test
     void getLocation() {
+        assertEquals(node.getLocation().x(),1);
+        assertEquals(node.getLocation().y(),2);
+        assertEquals(node.getLocation().z(),3);
     }
 
     @Test

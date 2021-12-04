@@ -167,6 +167,8 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
         }
         return false;
     }

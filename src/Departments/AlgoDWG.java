@@ -27,6 +27,19 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
         this.graph = null;
     }
 
+
+    //--------------------------- Function -----------------------------------------
+    private void DFS(Graph g, int v, ArrayList<Node> visited) {//==================DFS traversal
+        Node n = (Node) g.getNode(v);
+        visited.add(n);
+        for (EdgeData e : n.getEdgeMapOut().values()) {//------------------- for each edge we chack the dist node
+            Node dest = (Node) g.getNodesMap().get(e.getDest());
+            if (!visited.contains(dest)) {        // in case we didn't reach the dest yet
+                DFS(g, dest.getKey(), visited);
+            }
+        }
+    }
+
     //-------------------------------- Override -------------------------------------
     @Override
     public void init(DirectedWeightedGraph g) {

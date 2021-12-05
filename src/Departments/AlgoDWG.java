@@ -32,12 +32,24 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
 
 
     //--------------------------- Function -----------------------------------------
+    public void initWeight(Node n) {
+        Map<Point2D, EdgeData> neighbors = n.getEdgeMapOut();
+        for (EdgeData e : neighbors.values()) {
+            Node neighbor = (Node) graph.getNode(e.getDest());
+            if (neighbor.getWeight() > n.getWeight() + e.getWeight()) {
+                prevNodes.put(neighbor, n);
+                neighbor.setWeight(n.getWeight() + e.getWeight());
+
+            }
+
+        }
+    }
 
 
     public ResultsFormat dirjkstraAlogorithem(int src, int dest) {
         if(!isConnected()) return null;
-        Map<Integer, NodeData> nodesMap = graph.getNodesMap();
-        Map<Point2D, EdgeData> edgesMap = graph.getEdgesMap();
+        Map<Integer, NodeData> nodesMap = ((Graph)graph).getNodesMap();
+        Map<Point2D, EdgeData> edgesMap = ((Graph)graph).getEdgesMap();
         Node start = (Node) nodesMap.get(src);
         Node end = (Node) nodesMap.get(dest);
         start.setWeight(0);
@@ -45,7 +57,7 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
             if (n != start) n.setWeight(Integer.MAX_VALUE);        // init the weight of the nodes
         }
         Node temp = start;
-        for (NodeData i : graph.getNodesMap().values()) {
+        for (NodeData i : ((Graph)graph).getNodesMap().values()) {
             initWeight((Node) i);
         }
         ResultsFormat res = new ResultsFormat(end.getWeight(), null);
@@ -68,7 +80,7 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
         Node n = (Node) g.getNode(v);
         visited.add(n);
         for (EdgeData e : n.getEdgeMapOut().values()) {//------------------- for each edge we chack the dist node
-            Node dest = (Node) graph.getNodesMap().get(e.getDest());
+            Node dest = (Node) ((Graph)graph).getNodesMap().get(e.getDest());
             if (!visited.contains(dest)) {        // in case we didn't reach the dest yet
                 DFS(g, dest.getKey(), visited);
             }
@@ -78,11 +90,11 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
 
     @Override
     public boolean isConnected() {
-        for (NodeData n : graph.getNodesMap().values()) {    // move on all the nodes
+        for (NodeData n : ((Graph)graph).getNodesMap().values()) {    // move on all the nodes
             ArrayList<Node> visited = new ArrayList<>();   // check which  was allready visited
             DFS(graph, n.getKey(), visited);
 
-            for (NodeData k : graph.getNodesMap().values()) {     // DFS
+            for (NodeData k : ((Graph)graph).getNodesMap().values()) {     // DFS
                 if (!visited.contains(k)) {               // if the DFS didnt visit all the nodes then the g is not strongly connected;
                     return false;
                 }
@@ -112,8 +124,8 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
         NodeData best_Node = new Node();
         double best_path = Integer.MAX_VALUE;
         double max_path = Integer.MIN_VALUE;
-        for (NodeData src : graph.getNodesMap().values()) {
-            for (NodeData dest : graph.getNodesMap().values()) {
+        for (NodeData src : ((Graph)graph).getNodesMap().values()) {
+            for (NodeData dest : ((Graph)graph).getNodesMap().values()) {
 
                 double temp = shortestPathDist(src.getKey(), dest.getKey());
                 if (temp > max_path) max_path = temp;

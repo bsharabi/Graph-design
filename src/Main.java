@@ -1,8 +1,8 @@
 import Departments.*;
-import GUI.*;
+//import GUI.*;
 import api.DirectedWeightedGraph;
 
-import oldGUI.GraphGUI;
+//import oldGUI.GraphGUI;
 import org.json.JSONException;
 
 import org.json.simple.JSONObject;
@@ -16,7 +16,7 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) throws IOException, JSONException {
-        new Thread(new GraphGUI(), "oldGUI.GUI-D").start();
+//        new Thread(new GraphGUI(), "oldGUI.GUI-D").start();
 
 //        AlgoDWG a = new AlgoDWG();
 //        a.load("src/data/G1.json");

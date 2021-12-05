@@ -1,7 +1,7 @@
 import Departments.AlgoDWG;
 import Departments.Node;
-import GUI.Graph_GUI;
-import oldGUI.GraphGUI;
+//import GUI.Graph_GUI;
+//import oldGUI.GraphGUI;
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
 
@@ -56,6 +56,6 @@ public class Ex2 {
      */
     public static void runGUI(String json_file) {
         DirectedWeightedGraphAlgorithms alg = getGrapgAlgo(json_file);
-        new Thread(new Graph_GUI(alg), "oldGUI.GUI-D").start();
+//        new Thread(new Graph_GUI(alg), "oldGUI.GUI-D").start();
     }
 }

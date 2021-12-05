@@ -60,11 +60,24 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
         return res;
 
     }
+
+    private void DFS(DirectedWeightedGraph g, int v, ArrayList<Node> visited) {//==================DFS traversal
+        Node n = (Node) g.getNode(v);
+        visited.add(n);
+        for (EdgeData e : n.getEdgeMapOut().values()) {//------------------- for each edge we chack the dist node
+            Node dest = (Node) g.getNodesMap().get(e.getDest());
+            if (!visited.contains(dest)) {        // in case we didn't reach the dest yet
+                DFS(g, dest.getKey(), visited);
+            }
+        }
+    }
+    //-------------------------------- Override -------------------------------------
+
     @Override
     public boolean isConnected() {
-        for (NodeData n : g.getNodesMap().values()) {    // move on all the nodes
+        for (NodeData n : graph.getNodesMap().values()) {    // move on all the nodes
             ArrayList<Node> visited = new ArrayList<>();   // check which  was allready visited
-            DFS(g, n.getKey(), visited);
+            DFS(graph, n.getKey(), visited);
 
             for (NodeData k : g.getNodesMap().values()) {     // DFS
                 if (!visited.contains(k)) {               // if the DFS didnt visit all the nodes then the g is not strongly connected;
@@ -75,16 +88,6 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
         return true;
 
 
-    }
-    private void DFS(Graph g, int v, ArrayList<Node> visited) {//==================DFS traversal
-        Node n = (Node) g.getNode(v);
-        visited.add(n);
-        for (EdgeData e : n.getEdgeMapOut().values()) {//------------------- for each edge we chack the dist node
-            Node dest = (Node) g.getNodesMap().get(e.getDest());
-            if (!visited.contains(dest)) {        // in case we didn't reach the dest yet
-                DFS(g, dest.getKey(), visited);
-            }
-        }
     }
 
     @Override
@@ -119,7 +122,6 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
         }
         return best_Node;
     }
-    //-------------------------------- Override -------------------------------------
     @Override
     public void init(DirectedWeightedGraph g) {
         this.graph = g;
@@ -164,25 +166,6 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
         return new Graph();
     }
 
-    @Override
-    public boolean isConnected() {
-        return false;
-    }
-
-    @Override
-    public double shortestPathDist(int src, int dest) {
-        return 0;
-    }
-
-    @Override
-    public List<NodeData> shortestPath(int src, int dest) {
-        return null;
-    }
-
-    @Override
-    public NodeData center() {
-        return null;
-    }
 
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
@@ -277,4 +260,40 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
                 "graph=" + graph +
                 '}';
     }
+}
+class ResultsFormat {
+    public double distance;
+    public List<NodeData> path;
+
+    public boolean isStrongConnected() {
+        return strongConnected;
+    }
+
+    public void setStrongConnected(boolean strongConnected) {
+        this.strongConnected = strongConnected;
+    }
+
+    public boolean strongConnected;
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
+
+    public void setPath(List<NodeData> path) {
+        this.path = path;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public List<NodeData> getPath() {
+        return path;
+    }
+
+    public ResultsFormat(double distance, LinkedList path) {
+        this.distance = distance;
+        this.path = path;
+    }
+
 }

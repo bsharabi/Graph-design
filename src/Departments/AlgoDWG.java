@@ -29,16 +29,7 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
 
 
     //--------------------------- Function -----------------------------------------
-    private void DFS(Graph g, int v, ArrayList<Node> visited) {//==================DFS traversal
-        Node n = (Node) g.getNode(v);
-        visited.add(n);
-        for (EdgeData e : n.getEdgeMapOut().values()) {//------------------- for each edge we chack the dist node
-            Node dest = (Node) g.getNodesMap().get(e.getDest());
-            if (!visited.contains(dest)) {        // in case we didn't reach the dest yet
-                DFS(g, dest.getKey(), visited);
-            }
-        }
-    }
+
 
     public ResultsFormat dirjkstraAlogorithem(int src, int dest) {
         if(!isConnected()) return null;
@@ -68,6 +59,65 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
 
         return res;
 
+    }
+    @Override
+    public boolean isConnected() {
+        for (NodeData n : g.getNodesMap().values()) {    // move on all the nodes
+            ArrayList<Node> visited = new ArrayList<>();   // check which  was allready visited
+            DFS(g, n.getKey(), visited);
+
+            for (NodeData k : g.getNodesMap().values()) {     // DFS
+                if (!visited.contains(k)) {               // if the DFS didnt visit all the nodes then the g is not strongly connected;
+                    return false;
+                }
+            }
+        }
+        return true;
+
+
+    }
+    private void DFS(Graph g, int v, ArrayList<Node> visited) {//==================DFS traversal
+        Node n = (Node) g.getNode(v);
+        visited.add(n);
+        for (EdgeData e : n.getEdgeMapOut().values()) {//------------------- for each edge we chack the dist node
+            Node dest = (Node) g.getNodesMap().get(e.getDest());
+            if (!visited.contains(dest)) {        // in case we didn't reach the dest yet
+                DFS(g, dest.getKey(), visited);
+            }
+        }
+    }
+
+    @Override
+    public double shortestPathDist(int src, int dest) {
+        if (src==dest)return 0;
+        double temp = dirjkstraAlogorithem(src, dest).distance;
+        if (temp == Integer.MAX_VALUE) return -1;
+        return dirjkstraAlogorithem(src, dest).getDistance();
+    }
+
+    @Override
+    public List<NodeData> shortestPath(int src, int dest) {
+        return dirjkstraAlogorithem(src, dest).getPath();
+    }
+
+    @Override
+    public NodeData center() {
+        Map<NodeData, Double> City_Distances = new HashMap<>();
+        NodeData best_Node = new Node();
+        double best_path = Integer.MAX_VALUE;
+        double max_path = Integer.MIN_VALUE;
+        for (NodeData src : g.getNodesMap().values()) {
+            for (NodeData dest : g.getNodesMap().values()) {
+
+                double temp = shortestPathDist(src.getKey(), dest.getKey());
+                if (temp > max_path) max_path = temp;
+            }
+            City_Distances.put(src, max_path);
+            if (max_path < best_path) {
+                best_Node = src;
+            }
+        }
+        return best_Node;
     }
     //-------------------------------- Override -------------------------------------
     @Override

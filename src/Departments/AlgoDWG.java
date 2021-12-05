@@ -40,6 +40,35 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
         }
     }
 
+    public ResultsFormat dirjkstraAlogorithem(int src, int dest) {
+        if(!isConnected()) return null;
+        Map<Integer, NodeData> nodesMap = g.getNodesMap();
+        Map<Point2D, EdgeData> edgesMap = g.getEdgesMap();
+        Node start = (Node) nodesMap.get(src);
+        Node end = (Node) nodesMap.get(dest);
+        start.setWeight(0);
+        for (NodeData n : nodesMap.values()) {
+            if (n != start) n.setWeight(Integer.MAX_VALUE);        // init the weight of the nodes
+        }
+        Node temp = start;
+        for (NodeData i : g.getNodesMap().values()) {
+            initWeight((Node) i);
+        }
+        ResultsFormat res = new ResultsFormat(end.getWeight(), null);
+        List<NodeData> path = new ArrayList<>();
+        boolean button = true;
+        path.add(end);
+        while (prevNodes.get(end) != null) {
+            path.add(prevNodes.get(end));
+            end = (Node) prevNodes.get(end);
+        }
+        res.setPath(path);
+//            System.out.println(prevNodes.get(end).getKey());
+//            end = (Node) prevNodes.get(end);
+
+        return res;
+
+    }
     //-------------------------------- Override -------------------------------------
     @Override
     public void init(DirectedWeightedGraph g) {

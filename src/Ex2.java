@@ -1,10 +1,10 @@
 import Departments.AlgoDWG;
 import Departments.Node;
-//import GUI.Graph_GUI;
-//import oldGUI.GraphGUI;
+
+import GUI.Graph_GUI;
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
-
+import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 
@@ -13,15 +13,7 @@ import java.util.Iterator;
  */
 public class Ex2 {
     public static void main(String[] args) {
-        DirectedWeightedGraphAlgorithms ans = getGrapgAlgo("src/data/out.json");
-        ((AlgoDWG) ans).print();
-        System.out.println(ans);
-
-        ans.getGraph().removeNode(9);
-
-        ((AlgoDWG) ans).print();
-        System.out.println(ans);
-//        runGUI("src/data/out.json");
+      runGUI("src/data/out.json");
 
     }
 
@@ -56,6 +48,14 @@ public class Ex2 {
      */
     public static void runGUI(String json_file) {
         DirectedWeightedGraphAlgorithms alg = getGrapgAlgo(json_file);
-//        new Thread(new Graph_GUI(alg), "oldGUI.GUI-D").start();
+        try {
+            UIManager.setLookAndFeel(UIManager
+                    .getCrossPlatformLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException
+                | IllegalAccessException | UnsupportedLookAndFeelException e) {
+        }
+
+
+        new Thread(new Graph_GUI(alg), "GUI.GUI-D").start();
     }
 }

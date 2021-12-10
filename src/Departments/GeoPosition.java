@@ -2,17 +2,31 @@ package Departments;
 
 import api.GeoLocation;
 
+import java.awt.*;
+import java.awt.geom.Point2D;
 import java.text.MessageFormat;
 
 public class GeoPosition implements GeoLocation {
     private double x;
     private double y;
     private double z;
+    private Point2D p;
 
     public GeoPosition(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.p = new Point((int) x, (int) y);
+    }
+
+    public Point2D getP() {
+        return p;
+    }
+
+    public void setP(Point2D p) {
+        this.x=p.getX();
+        this.y=p.getY();
+        this.p = p;
     }
 
     @Override

@@ -1,10 +1,5 @@
 package Departments;
-
-
-import api.DirectedWeightedGraph;
-import api.DirectedWeightedGraphAlgorithms;
-import api.EdgeData;
-import api.NodeData;
+import api.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -75,7 +70,7 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
 
     @Override
     public boolean isConnected() {
-        return false;
+        return true;
     }
 
     @Override
@@ -127,7 +122,6 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
         }
         return false;
     }
-
     /**
      * @param file - file name of JSON file
      * @return

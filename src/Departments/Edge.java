@@ -3,6 +3,7 @@ package Departments;
 import api.EdgeData;
 
 import java.awt.*;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
 public class Edge implements EdgeData, Comparable<Point2D> {
@@ -12,6 +13,8 @@ public class Edge implements EdgeData, Comparable<Point2D> {
     private int dest;
     private String info;
     private int tag;
+    private Line2D lineDraw;
+    private Color edgeColor;
     private Point2D p;
 
     // -------------------------- Constructor --------------------------------------
@@ -20,6 +23,8 @@ public class Edge implements EdgeData, Comparable<Point2D> {
         this.src = src;
         this.w = w;
         this.dest = dest;
+        edgeColor = Color.BLUE;
+        lineDraw = null;
         this.p = new Point(src, dest);
     }
 
@@ -31,6 +36,29 @@ public class Edge implements EdgeData, Comparable<Point2D> {
 
     public Point2D getP() {
         return p != null ? p : null;
+    }
+
+    /*
+     * @return the edge color
+     */
+    public Color getEdgeColor() {
+        return edgeColor;
+    }
+
+    /*
+     * Sets the color of the edge
+     * @param c Color
+     */
+    public void setEdgeColor(Color c) {
+        edgeColor = c;
+    }
+
+    public Line2D getLineDraw() {
+        return lineDraw;
+    }
+
+    public void setLineDraw(Line2D lineDraw) {
+        this.lineDraw = lineDraw;
     }
 
     //-------------------------------- Override -------------------------------------
@@ -71,20 +99,17 @@ public class Edge implements EdgeData, Comparable<Point2D> {
 
     @Override
     public int compareTo(Point2D o) {
-        if (this.p.equals(o))
+        if (this.p.getX() == o.getY() && this.p.getY() == o.getX())
             return 0;
         return -1;
     }
 
     @Override
     public String toString() {
-
         return "    {\n" +
                 "      \"src\":" + src + ",\n" +
                 "      \"w\":" + w + ",\n" +
                 "      \"dest\":" + dest + "\n" +
                 "    }";
-
     }
-
 }

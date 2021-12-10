@@ -33,7 +33,7 @@ public class Graph implements DirectedWeightedGraph {
         //Go over the edges of the graph and add to each node the edges that belong to it,
         //ie both the target edge and the source edge
         //O(edge.size())
-        assert edgeMap!=null;
+        assert edgeMap != null;
         edgesMap.forEach((k, v) -> {
             int src = (int) k.getX();
             int dest = (int) k.getY();
@@ -51,6 +51,14 @@ public class Graph implements DirectedWeightedGraph {
     }
 
     //--------------------------- Getter && Setter --------------------------------
+
+    public void setEdgesMap(Map<Point2D, EdgeData> edgesMap) {
+        this.edgesMap = edgesMap;
+    }
+
+    public void setNodesMap(Map<Integer, NodeData> nodesMap) {
+        this.nodesMap = nodesMap;
+    }
 
     public Map<Point2D, EdgeData> getEdgesMap() {
         try {
@@ -73,7 +81,6 @@ public class Graph implements DirectedWeightedGraph {
         }
         return null;
     }
-
 
     //-------------------------------- Override -------------------------------------
     //O(1)
@@ -152,7 +159,6 @@ public class Graph implements DirectedWeightedGraph {
         }
     }
 
-
     @Override
     public Iterator<NodeData> nodeIter() {
         try {
@@ -190,10 +196,6 @@ public class Graph implements DirectedWeightedGraph {
         return null;
     }
 
-    /**
-     * @param key
-     * @return
-     */
     //O(k)
     @Override
     public NodeData removeNode(int key) {

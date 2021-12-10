@@ -1,12 +1,9 @@
 import Departments.AlgoDWG;
-import Departments.Node;
-
 import GUI.Graph_GUI;
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
 import javax.swing.*;
-import java.awt.event.ActionListener;
-import java.util.Iterator;
+
 
 /**
  * This class is the main class for Ex2 - your implementation will be tested using this class.
@@ -16,7 +13,6 @@ public class Ex2 {
       runGUI("src/data/out.json");
 
     }
-
     /**
      * This static function will be used to test your implementation
      *
@@ -27,7 +23,6 @@ public class Ex2 {
         DirectedWeightedGraph ans = getGrapgAlgo(json_file).getGraph();
         return ans;
     }
-
     /**
      * This static function will be used to test your implementation
      *
@@ -54,8 +49,6 @@ public class Ex2 {
         } catch (ClassNotFoundException | InstantiationException
                 | IllegalAccessException | UnsupportedLookAndFeelException e) {
         }
-
-
-        new Thread(new Graph_GUI(alg), "GUI.GUI-D").start();
+        new Thread(new Graph_GUI(alg), "GUI-D").start();
     }
 }

@@ -1,16 +1,19 @@
 package Departments;
+
 import api.EdgeData;
 import api.GeoLocation;
 import api.NodeData;
+
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-public class Node implements NodeData {
+public class Node implements Comparator<Node>, NodeData {
 
     private GeoLocation position3D;
     private int id;
@@ -45,8 +48,8 @@ public class Node implements NodeData {
         this.position3D = pos;
         this.id = id;
         this.vertexState = Color.red;
-        this.visualVertex = new Ellipse2D.Double(pos.x() - 9, pos.y() - 9, 20, 20);
         pointDraw = new Point((int) pos.x(), (int) pos.y());
+        this.visualVertex = new Ellipse2D.Double(pos.x() - 9, pos.y() - 9, 20, 20);
         this.edgeMapIn = new HashMap<>();
         this.edgeMapOut = new HashMap<>();
     }
@@ -142,7 +145,18 @@ public class Node implements NodeData {
         this.pointDraw = pointDraw;
     }
 
-//-------------------------------- Override -------------------------------------
+    //-------------------------------- Function -------------------------------------
+    public void initDrawColor() {
+        setVertexState(Color.red);
+        if(!edgeMapOut.isEmpty())
+        edgeMapOut.forEach((K,V)->{
+            ((Edge)V).setEdgeColor(Color.blue);
+            ((Edge)V).setArrowColor(Color.black);
+        });
+
+    }
+
+    //-------------------------------- Override -------------------------------------
 
     @Override
     public int getKey() {
@@ -199,5 +213,13 @@ public class Node implements NodeData {
                 "      \"pos\": " + position3D + ",\n" +
                 "      \"id\":" + id + "\n" +
                 "    }";
+    }
+
+    public int compare(Node node1, Node node2) {
+        if (node1.getWeight() < node2.getWeight())
+            return -1;
+        if (node1.getWeight() > node2.getWeight())
+            return 1;
+        return 0;
     }
 }

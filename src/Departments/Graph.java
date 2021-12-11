@@ -1,16 +1,16 @@
 package Departments;
+
 import api.DirectedWeightedGraph;
 import api.EdgeData;
 import api.NodeData;
+
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-
-// error msg access
-// add listener to Map
 public class Graph implements DirectedWeightedGraph {
 
     private Map<Point2D, EdgeData> edgesMap;
@@ -25,9 +25,10 @@ public class Graph implements DirectedWeightedGraph {
     }
 
     public Graph(Map<Integer, NodeData> nodeMap, Map<Point2D, EdgeData> edgeMap) {
+        super();
         //The constructor makes sure to accept existing objects
-        this.edgesMap = edgeMap != null ? edgeMap : new HashMap<>();
-        this.nodesMap = nodeMap != null ? nodeMap : new HashMap<>();
+        this.edgesMap = edgeMap != null ? edgeMap : new HashMap<Point2D, EdgeData>();
+        this.nodesMap = nodeMap != null ? nodeMap : new HashMap<Integer, NodeData>();
         this.mCount = 0;
 
         //Go over the edges of the graph and add to each node the edges that belong to it,
@@ -62,24 +63,24 @@ public class Graph implements DirectedWeightedGraph {
 
     public Map<Point2D, EdgeData> getEdgesMap() {
         try {
-            if (edgesMap == null || edgesMap.isEmpty())
-                throw new NullPointerException("The Map does not exist or the EdgesMap is not found");
+            if (edgesMap.isEmpty())
+                throw new NullPointerException("(Getter) The Map does not exist or the EdgesMap is not found");
             return edgesMap;
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             System.out.println(e);
         }
-        return null;
+        return new HashMap<Point2D, EdgeData>();
     }
 
     public Map<Integer, NodeData> getNodesMap() {
         try {
-            if (nodesMap == null || nodesMap.isEmpty())
+            if (nodesMap.isEmpty())
                 throw new NullPointerException("The Map does not exist or the NodesMap is not found");
             return nodesMap;
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             System.out.println(e);
         }
-        return null;
+        return new HashMap<Integer, NodeData>();
     }
 
     //-------------------------------- Override -------------------------------------
@@ -120,6 +121,8 @@ public class Graph implements DirectedWeightedGraph {
             //Check whether the resulting node is valid or does not exist in the node list
             if (n == null || nodesMap.containsKey(n.getKey()))
                 throw new Exception("It is not possible to add a new node because it exists or the sent node is invalid");
+            //Inc mode count
+            this.mCount++;
             nodesMap.put(n.getKey(), n);
         } catch (Exception e) {
             System.out.println(e);
@@ -141,7 +144,9 @@ public class Graph implements DirectedWeightedGraph {
                 //If it exists, we will override the old, otherwise we will add it as new
                 if (edgesMap.containsKey(p)) {
                     EdgeData oldEdge = edgesMap.get(p);
-                    edgesMap.replace(p, oldEdge, newEdge);
+                    //Replace edge only with a different weight from the previous weight
+                    if (oldEdge.getWeight() != w)
+                        edgesMap.replace(p, oldEdge, newEdge);
                 } else {
                     //Add the edge to the list of edges of the graph
                     edgesMap.put(p, newEdge);
@@ -152,6 +157,8 @@ public class Graph implements DirectedWeightedGraph {
                     node = (Node) nodesMap.get(dest);
                     node.getEdgeMapIn().put(p, newEdge);
                 }
+                //Inc mode count
+                this.mCount++;
             } else
                 throw new Exception("The node does not exist");
         } catch (Exception e) {
@@ -161,39 +168,87 @@ public class Graph implements DirectedWeightedGraph {
 
     @Override
     public Iterator<NodeData> nodeIter() {
+        int oldMC = this.mCount;
+        Iterator<NodeData> nodeIter = nodesMap.values().iterator();
         try {
-            if (nodesMap == null || nodesMap.isEmpty())
-                throw new Exception("There is no edge object or the object is not defined or empty.");
-            return nodesMap.values().iterator();
+            if (nodesMap.isEmpty())
+                throw new Exception("(nodeIter)->the object is not defined or empty.");
+            return new Iterator<NodeData>() {
+                @Override
+                public boolean hasNext() {
+                    return nodeIter.hasNext();
+                }
+
+                @Override
+                public NodeData next() {
+                    if (oldMC == mCount)
+                        return nodeIter.next();
+                    throw new RuntimeException("(nodeIter_next)->There is a change in the graph");
+                }
+            };
+        } catch (RuntimeException r) {
+            System.out.println(r);
         } catch (Exception e) {
             System.out.println(e);
         }
-        return null;
+        return nodeIter;
     }
 
     @Override
     public Iterator<EdgeData> edgeIter() {
+        int oldMC = this.mCount;
+        Iterator<EdgeData> edgeIter = edgesMap.values().iterator();
         try {
-            if (edgesMap == null || edgesMap.isEmpty())
-                throw new Exception("There is no edge object or the object is not defined or empty.");
-            return edgesMap.values().iterator();
+            if (edgesMap.isEmpty())
+                throw new Exception("(edgeIter)->There is no edge object or the object is not defined or empty.");
+            return new Iterator<EdgeData>() {
+                @Override
+                public boolean hasNext() {
+                    return edgeIter.hasNext();
+                }
+
+                @Override
+                public EdgeData next() {
+                    if (oldMC == mCount)
+                        return edgeIter.next();
+                    throw new RuntimeException("(edgeIter_next)->There is a change in the graph");
+                }
+            };
+        } catch (RuntimeException r) {
+            System.out.println(r);
         } catch (Exception e) {
             System.out.println(e);
         }
-        return null;
+        return edgeIter;
     }
 
     @Override
     public Iterator<EdgeData> edgeIter(int node_id) {
+        int oldMC = this.mCount;
+        Node n = (Node) nodesMap.get(node_id);
+        Iterator<EdgeData> edgeIter = n.getEdgeListOut().iterator();
         try {
-            Node n = (Node) nodesMap.get(node_id);
-            if (n.getEdgeListOut() == null)
-                throw new Exception("There is no edge object or the object is not defined or empty.");
-            return n.getEdgeListOut().iterator();
+            if (edgeIter == null)
+                throw new Exception("(edgeIter_node_id)->There is no edge object or the object is not defined or empty.");
+            return new Iterator<EdgeData>() {
+                @Override
+                public boolean hasNext() {
+                    return edgeIter.hasNext();
+                }
+
+                @Override
+                public EdgeData next() {
+                    if (oldMC == mCount)
+                        return edgeIter.next();
+                    throw new RuntimeException("(edgeIter_next)->There is a change in the graph");
+                }
+            };
+        } catch (RuntimeException r) {
+            System.out.println(r);
         } catch (Exception e) {
-            System.out.println("Error");
+            System.out.println(e);
         }
-        return null;
+        return new ArrayList<EdgeData>().iterator();
     }
 
     //O(k)
@@ -201,8 +256,8 @@ public class Graph implements DirectedWeightedGraph {
     public NodeData removeNode(int key) {
         try {
             //Checks if the node exists
-            if (!nodesMap.containsKey(key))
-                throw new Exception("The node does not exist ");
+            if (nodesMap == null || !nodesMap.containsKey(key))
+                throw new Exception("(removeNode)->The node does not exist ");
             //Removes the node from the list of nodes in the graph
             Node temp = (Node) nodesMap.remove(key);
             Map<Point2D, EdgeData> mapIn = temp.getEdgeMapIn();
@@ -228,6 +283,7 @@ public class Graph implements DirectedWeightedGraph {
                 Node node = (Node) nodesMap.get(dest);
                 node.getEdgeMapIn().remove(p);
             });
+            this.mCount++;
             return temp;
         } catch (Exception e) {
             System.out.println(e);
@@ -249,8 +305,8 @@ public class Graph implements DirectedWeightedGraph {
         Point2D p = new Point(src, dest);
         try {
             //Checks if the edge exists
-            if (!edgesMap.containsKey(p))
-                throw new Exception("The edge does not exist");
+            if (edgesMap == null || !edgesMap.containsKey(p))
+                throw new Exception("(removeEdge)->The edge does not exist");
             //Removes the edge from the list of edges in the graph
             EdgeData edge = edgesMap.remove(p);
             //Removes the edge from the node.
@@ -260,6 +316,7 @@ public class Graph implements DirectedWeightedGraph {
             node = (Node) nodesMap.get(dest);
             node.getEdgeMapIn().remove(p);
             //return edge
+            this.mCount++;
             return edge;
         } catch (Exception e) {
             System.out.println(e);

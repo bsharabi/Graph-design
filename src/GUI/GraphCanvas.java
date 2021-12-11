@@ -1,25 +1,22 @@
 package GUI;
-
 import Departments.Edge;
 import Departments.GeoPosition;
 import Departments.Graph;
 import Departments.Node;
 import api.DirectedWeightedGraph;
-import api.EdgeData;
 import api.GeoLocation;
 import api.NodeData;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
+import java.text.MessageFormat;
 import java.util.Iterator;
 
 
-public class GraphCanvas extends JPanel implements MouseListener, Runnable {
+public class GraphCanvas extends JPanel implements MouseListener {
 
     private Graph_GUI gui;
     private double minX, maxX, minY, maxY;
@@ -27,7 +24,7 @@ public class GraphCanvas extends JPanel implements MouseListener, Runnable {
     private int barb;
     //----------------------------- constructor -----------------------------------
 
-    public GraphCanvas(Graph_GUI frame, DirectedWeightedGraph gra) {
+    public GraphCanvas(Graph_GUI frame) {
         this.gui = frame;
         phi = Math.toRadians(25);
         barb = 25;
@@ -40,13 +37,12 @@ public class GraphCanvas extends JPanel implements MouseListener, Runnable {
     //O(nodeSize*edgeSizeNode)
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         findMinMaxPos();
 
-        double ABSx = Math.abs(minX - maxX);
-        double ABSy = Math.abs(minY - maxY);
-        double sX = (getWidth() / ABSx) * 0.9;
-        double sY = (getHeight() / ABSy) * 0.9;
+        double absX = Math.abs(minX - maxX);
+        double absY = Math.abs(minY - maxY);
+        double sX = (getWidth() / ((absX == 0) ? 1 : absX)) * 0.95;
+        double sY = (getHeight() / ((absY == 0) ? 1 : absY)) * 0.9;
 
         Graph graph = (Graph) gui.getAlgo().getGraph();
         Graphics2D g2 = (Graphics2D) g;
@@ -59,20 +55,17 @@ public class GraphCanvas extends JPanel implements MouseListener, Runnable {
             g2.setColor(node.getVertexState());
             double x = (node.getLocation().x() - minX) * sX * 0.97 + 30;
             double y = (node.getLocation().y() - minY) * sY * 0.97 + 30;
-            node.setLocation(new GeoPosition(x,y,0));
+            node.setLocation(new GeoPosition(x, y, 0));
             node.setVisualVertex(new Ellipse2D.Double(x - 9, y - 9, 20, 20));
             node.setPointDraw(new Point((int) x, (int) y));
             g2.fill(node.getVisualVertex());
+            g2.setColor(Color.BLACK);
+            g2.setFont(new Font("Dialog", Font.BOLD, 18));
+            g2.drawString(node.getKey() + "", (int) x - 15, (int) y - 10);
         }
-
         g2.setStroke(new BasicStroke(5));
-
         ItNode = graph.nodeIter();
-        Iterator<EdgeData> ItEdge = gui.getAlgo().getGraph().edgeIter();
-        while (ItEdge.hasNext()) {
-            Edge ed = (Edge) ItEdge.next();
-            ed.setLineDraw(null);
-        }
+
         while (ItNode.hasNext()) {
             Node nodeSrc = (Node) ItNode.next();
             Iterator edgeIter = nodeSrc.getEdgeListOut().iterator();
@@ -81,27 +74,13 @@ public class GraphCanvas extends JPanel implements MouseListener, Runnable {
                 Edge edge = (Edge) edgeIter.next();
                 //O(1)
                 Point sw = (Point) nodeSrc.getPointDraw();
-                Node destNode = (Node) graph.getNode(edge.getDest());
-                Point ne = (Point) destNode.getPointDraw();
-                Point2D pointDest = edge.getP();
+                Node nodeDest = (Node) graph.getNode(edge.getDest());
+                Point ne = (Point) nodeDest.getPointDraw();
                 Line2D line = new Line2D.Double(sw, ne);
-                Edge edgeD = ((Edge) nodeSrc.getEdgeMapIn().get(pointDest));
-                if (edgeD == null) {
-                    edge.setLineDraw(line);
-                    g2.setColor(edge.getEdgeColor());
-                    g2.draw(edge.getLineDraw());
-                    drawArrowHead(g2, ne, sw, Color.BLACK, edge.getWeight());
-                    continue;
-                }
-                if (edge.getLineDraw() == null && nodeSrc.getEdgeMapIn().containsKey(pointDest) && ((Edge) nodeSrc.getEdgeMapIn().get(pointDest)).getLineDraw() != null) {
-                    edgeD.setLineDraw(line);
-                } else {
-                    edge.setLineDraw(line);
-                    g2.setColor(edge.getEdgeColor() == edgeD.getEdgeColor() ? Color.blue : Color.CYAN);
-                    g2.draw(edge.getLineDraw());
-                }
-
-                drawArrowHead(g2, ne, sw, Color.BLACK, edge.getWeight());
+                edge.setLineDraw(line);
+                g2.setColor(edge.getEdgeColor());
+                g2.draw(edge.getLineDraw());
+                drawArrowHead(g2, ne, sw, edge);
             }
         }
     }
@@ -128,13 +107,16 @@ public class GraphCanvas extends JPanel implements MouseListener, Runnable {
         }
     }
 
-    private void drawArrowHead(Graphics2D g2, Point tip, Point tail, Color color, double w) {
-        g2.setPaint(color);
+    //from https://coderanch.com/t/339505/java/drawing-arrows
+    private void drawArrowHead(Graphics2D g2, Point tip, Point tail, Edge edge) {
+        if (edge.getArrowColor() == Color.black && gui.arrowEnable)
+            return;
+        g2.setPaint(edge.getArrowColor());
         double dy = tip.y - tail.y;
         double dx = tip.x - tail.x;
         double theta = Math.atan2(dy, dx);
-        //System.out.println("theta = " + Math.toDegrees(theta));
         double x, y, rho = theta + phi;
+
         for (int j = 0; j < 2; j++) {
             x = tip.x - barb * Math.cos(rho);
             y = tip.y - barb * Math.sin(rho);
@@ -142,18 +124,17 @@ public class GraphCanvas extends JPanel implements MouseListener, Runnable {
             rho = theta - phi;
         }
 //        g2.setFont(new Font("Dialog", Font.BOLD, 18));
-//        g2.drawString(MessageFormat.format("{0,number,#.##}",+w), (tip.x+tail.x) , ((tip.y+tail.y)));
+//        g2.drawString(MessageFormat.format("{0,number,#.##}", edge.getWeight()), (tip.x + tail.x), ((tip.y + tail.y)));
 
     }
+
 
     //-------------------------------------- Override ------------------------------------
     @Override
     public void mouseClicked(MouseEvent e) {
         double x = e.getX();
         double y = e.getY();
-
         if (gui.buttonF) {
-            System.out.println(x + "," + y);
             gui.getAlgo().getGraph().addNode(new Node(new GeoPosition(x, y, 0), gui.getAlgo().getGraph().nodeSize()));
             gui.repaint();
         }
@@ -179,8 +160,4 @@ public class GraphCanvas extends JPanel implements MouseListener, Runnable {
 
     }
 
-    @Override
-    public void run() {
-
-    }
 }

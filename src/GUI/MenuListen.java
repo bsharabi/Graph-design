@@ -24,21 +24,24 @@ public class MenuListen implements ActionListener, MenuListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if (e.getActionCommand() == "Help Prompt")
+        if (e.getActionCommand() == "Help Prompt") {
             new HelpPrompt();
-        if (e.getActionCommand() == "Readme github")
+        }
+        if (e.getActionCommand() == "Readme github") {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
                 try {
-                    Desktop.getDesktop().browse(new URI("http://www.github.com/bsharabi"));
+                    Desktop.getDesktop().browse(new URI("https://github.com/bsharabi/Graph-design/blob/master/ReadMe.md"));
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 } catch (URISyntaxException ex) {
                     ex.printStackTrace();
                 }
+        }
 
         if (e.getActionCommand() == "Close") {
             gui.dispose();
         }
+
         if (e.getActionCommand() == "Load graph") {
             JFileChooser chooser = new JFileChooser();
             chooser.setDialogTitle("Hello");
@@ -54,10 +57,34 @@ public class MenuListen implements ActionListener, MenuListener {
                 JOptionPane.showMessageDialog(gui, "Sorry ");
             }
         }
+
         if (e.getActionCommand() == "save graph") {
-            //לבדוק ששם הקובץ לא קיים
-            String input = JOptionPane.showInputDialog("Enter name ");
-            gui.getAlgo().save("src/data/" + input + ".json");
+            int n;
+            String filePathString;
+            JFileChooser chooser = new JFileChooser();
+            do {
+                n = 0;
+                chooser.setDialogTitle("save graph");
+                chooser.setCurrentDirectory(new java.io.File("./src/data"));
+                chooser.setSelectedFile(new File(""));
+                chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                if (chooser.showSaveDialog(gui) == JFileChooser.APPROVE_OPTION) {
+                    File f = chooser.getSelectedFile();
+                    filePathString = f.getPath().split("\\.")[0] + ".json";
+                    if (f.exists() && !f.isDirectory())
+                        n = JOptionPane.showConfirmDialog(
+                                gui,
+                                "File name exists!\n" +
+                                        "Would you like to replace it?",
+                                "update file",
+                                JOptionPane.YES_NO_OPTION);
+                    if (n == 1)
+                        continue;
+                    gui.getAlgo().save(filePathString);
+                } else {
+                    JOptionPane.showMessageDialog(gui, "Sorry ");
+                }
+            } while (n == 1);
         }
     }
 

@@ -30,7 +30,7 @@ public class HelpPrompt extends JFrame implements ActionListener {
         SimpleAttributeSet center = new SimpleAttributeSet();
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
-        helpInformation.setText("Welcome to the Graph GUI !\n"
+        helpInformation.setText("\n\n\n\nWelcome to the Graph GUI !\n"
                 + "This program will allow you to make your own graph.\n"
                 + "Here are some of the following features that this program has.\n\n"
                 + "Add Vertex: Adds a Vertex to the screen\n"

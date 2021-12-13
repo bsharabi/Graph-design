@@ -1,4 +1,5 @@
 package Departments;
+
 import api.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,31 +19,34 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
 
     private DirectedWeightedGraph graph;
     private Map<NodeData, NodeData> prevNodes;
+    private int connect;
+    private int mc;
 
     // -------------------------- Constructor --------------------------------------
     public AlgoDWG() {
         this.graph = null;
         this.prevNodes = new HashMap<>();
+        connect = -1;
+        mc = 0;
     }
 
     // -------------------------- Function --------------------------------------
 
-    private void DFS(DirectedWeightedGraph g, int v, ArrayList<Node> visited) {
-        Node n = (Node) g.getNode(v);
-        visited.add(n);
-        for (EdgeData e : n.getEdgeMapOut().values()) {
-            Node dest = (Node) ((Graph) graph).getNodesMap().get(e.getDest());
-            if (!visited.contains(dest))
-                DFS(g, dest.getKey(), visited);
+    public boolean DFS(DirectedWeightedGraph g, NodeData v) {//==================DFS traversal
+        Map<Integer, NodeData> Visited = new HashMap<>();
+        Stack<NodeData> stack = new Stack<>();
+        Node n;
+        stack.add(v);
+        while (!stack.isEmpty()) {
+            n = (Node) stack.pop();
+            for (EdgeData e : n.getEdgeListOut())
+                if (!Visited.values().contains(g.getNode(e.getDest()))) {
+                    stack.add(g.getNode(e.getDest()));
+                    Visited.put(e.getDest(), g.getNode(e.getDest()));
+                }
         }
-    }
+        return (Visited.values().size() == g.nodeSize());
 
-    public boolean availablePath(int src,int dest) {
-        ArrayList<Node> visited = new ArrayList<>();
-        DFS(graph, src, visited);
-        if (!visited.contains(this.graph.getNode(dest)))
-            return false;
-        return true;
     }
 
     public void traveler(int v, ArrayList<NodeData> visited, PriorityQueue<Node> pq) {
@@ -58,7 +62,7 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
                     n.setTag(neighbour.getKey());
                     if (prevNodes.get(neighbour.getKey()) != null)
                         prevNodes.replace(neighbour, prevNodes.get(neighbour), n);
-                     else
+                    else
                         prevNodes.put(neighbour, n);
                     pq.add(neighbour);
                 }
@@ -66,8 +70,9 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
         }
     }
 
-    public ResultsFormat sageakstra(int src, int dest) {
+    public ResultsFormat saGeekyStria(int src, int dest) {
         this.prevNodes.clear();
+        if (!isConnected()) return null;
         ArrayList<NodeData> visited = new ArrayList<>();
         Map<Integer, NodeData> nodesMap = ((Graph) graph).getNodesMap();
 
@@ -75,16 +80,15 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
         Node end = (Node) graph.getNode(dest);
 
         for (NodeData n : nodesMap.values()) n.setWeight(Integer.MAX_VALUE);
-
         PriorityQueue<Node> pq = new PriorityQueue<Node>(((Graph) graph).getNodesMap().values().size(), new Node());
-
         pq.add(start);
         start.setWeight(0);
         while (visited.size() != ((Graph) graph).getNodesMap().values().size()) {
 
             Node u = pq.remove();
-
-            visited.add(u);
+            if (!visited.contains(u)) {
+                visited.add(u);
+            }
             traveler(u.getKey(), visited, pq);
         }
         LinkedList<Node> path = new LinkedList<>();
@@ -96,58 +100,103 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
             temp = (Node) prevNodes.get(temp);
         }
         ResultsFormat res = new ResultsFormat(end.getWeight(), path);
+
         return res;
     }
 
-    public double maxDistance(NodeData node){// maxDistance is a help func who returns the max distance of each node so at the center func all we need to do is to chack what node gives us the min output
-        double max =Integer.MIN_VALUE;
-        Map<Integer, NodeData> nodesMap = ((Graph) graph).getNodesMap();// list of all the nodes
-        for(NodeData e:((Graph)graph).getNodesMap().values()) { // for each node we check the distance from our source node
-            double temp = shortestPathDist(node.getKey(), e.getKey());//  if you don't understand this row you might be thinking again of what are yoe doing
+    public double saGeekyStria2(int src, int dest) {
+        this.prevNodes.clear();
+        Map<Integer, NodeData> nodesMap = ((Graph) graph).getNodesMap();
+
+        Node start = (Node) graph.getNode(src);
+        Node end = (Node) graph.getNode(dest);
+
+        for (NodeData n : nodesMap.values()) n.setWeight(Integer.MAX_VALUE);
+        PriorityQueue<Node> pq = new PriorityQueue<>(((Graph) graph).getNodesMap().values().size(), new Node());
+
+        pq.add(start);
+        start.setWeight(0);
+
+        while (!pq.isEmpty()) {
+            Node u = pq.remove();
+            for (EdgeData e : u.getEdgeListOut()) {
+                NodeData neighbour = nodesMap.get(e.getDest());
+                if (neighbour.getWeight() > u.getWeight() + e.getWeight()) {
+                    neighbour.setWeight(u.getWeight() + e.getWeight());
+                    pq.add((Node) neighbour);
+                    prevNodes.put(neighbour, u);
+                }
+            }
+        }
+        return end.getWeight();
+    }
+
+    public double maxDistance(NodeData node) {
+        double max = Integer.MIN_VALUE;
+        Iterator nodeIter = getGraph().nodeIter();
+        while (nodeIter.hasNext()) {
+            Node n = (Node) nodeIter.next();
+            double temp = shortestPathDist(node.getKey(), n.getKey());
             max = Math.max(temp, max);
         }
         return max;
-
-
     }
 
-    public Tsp getMin(Tsp[] arr ,int src,ArrayList<Node> visited){
+    public Tsp getMin(Tsp[] arr, int src, ArrayList<Node> visited) {
         Tsp tsp = arr[0];
-        double min =Integer.MAX_VALUE;
-        for(int i=0;i<arr.length;i++){
-            if (arr[i].getLength()<min&&arr[i].getDest()!=src&&!visited.contains(graph.getNode(arr[i].getDest()))){
-                min=arr[i].getLength();
-                tsp= arr[i];
+        double min = Integer.MAX_VALUE;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i].getLength() < min && arr[i].getDest() != src && !visited.contains(graph.getNode(arr[i].getDest()))) {
+                min = arr[i].getLength();
+                tsp = arr[i];
             }
         }
-
 
 
         return tsp;
     }
 
-    public Map<Integer,Tsp[]> tspMapInitl(List<NodeData> cities){// להחליף את הריזולט פורמט בקלאס החדשTCP ולהוסיף לTCP שדה של יעד סופי כך שיהיה לנו את היכולת לדעת לאיזה עיר בדיוק אנחנו מגיעים בסוף המסלול ולדעת מאיפה לחפש מסלול חדש.
+    public Map<Integer, Tsp[]> tspMapInit(List<NodeData> cities) {
 
         int amountCities = cities.size();
-        Map<Integer, Tsp[]> cityTOtsp = new HashMap<>();
+        Map<Integer, Tsp[]> cityToTsp = new HashMap<>();
         for (NodeData city : cities) {
             Tsp[] temp = new Tsp[amountCities - 1];
             int k = 0;
-            PriorityQueue<Tsp> pq= new PriorityQueue<Tsp>(amountCities-1,new Tsp());
+            PriorityQueue<Tsp> pq = new PriorityQueue<Tsp>(amountCities - 1, new Tsp());
             for (NodeData nextCity : cities) {
                 if (city == nextCity) continue;
                 else {
-                    pq.add(new Tsp(sageakstra(city.getKey(),nextCity.getKey()),nextCity.getKey()));
-                    temp[k]= new Tsp(sageakstra(city.getKey(),nextCity.getKey()),nextCity.getKey());
+                    pq.add(new Tsp(saGeekyStria(city.getKey(), nextCity.getKey()), nextCity.getKey()));
+                    temp[k] = new Tsp(saGeekyStria(city.getKey(), nextCity.getKey()), nextCity.getKey());
                     k++;
 
                 }
             }
-            cityTOtsp.put(city.getKey(), temp);
+            cityToTsp.put(city.getKey(), temp);
         }
 
-        return cityTOtsp;
+        return cityToTsp;
     }
+
+    public DirectedWeightedGraph GetOpp(DirectedWeightedGraph g) {
+        DirectedWeightedGraph res = new Graph();
+        for (NodeData n : ((Graph) g).getNodesMap().values()) {
+            Node b = new Node(n.getLocation(), n.getKey());
+            res.addNode(b);
+        }
+        for (EdgeData e : ((Graph) g).getEdgesMap().values()) {
+            res.connect(e.getDest(), e.getSrc(), e.getWeight());
+        }
+        return res;
+    }
+
+    public void print() {
+        Iterator it = graph.nodeIter();
+        while (it.hasNext())
+            System.out.println(((Node) it.next()).print());
+    }
+
 
     //-------------------------------- Override -------------------------------------
     @Override
@@ -196,55 +245,51 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
 
     @Override
     public boolean isConnected() {
-        for (NodeData n : ((Graph) graph).getNodesMap().values()) {
-            ArrayList<Node> visited = new ArrayList<>();
-            DFS(graph, n.getKey(), visited);
-            for (NodeData k : ((Graph) graph).getNodesMap().values())
-                if (!visited.contains(k))
-                    return false;
-        }
+        if (getGraph().getMC() != mc)
+            connect = -1;
+        if (connect != -1)
+            return connect == 0 ? false : true;
+        NodeData src = getGraph().nodeIter().next();
+        if (DFS(this.graph, src) == false || DFS(GetOpp(this.graph), src) == false)
+            return false;
         return true;
     }
 
     @Override
     public double shortestPathDist(int src, int dest) {
-        if(!availablePath(src,dest))
+        if (!isConnected())
             return -1;
         if (src == dest) return 0;
-        double temp = sageakstra(src, dest).distance;
+        double temp = saGeekyStria2(src, dest);
         if (temp == Integer.MAX_VALUE) return -1;
-        return sageakstra(src, dest).distance;
+        return temp;
     }
 
     @Override
     public List<NodeData> shortestPath(int src, int dest) {
-        if(!availablePath(src,dest)){
+        if (!isConnected()) {
+            System.out.println("there are no path's between those nodes");
             return null;
         }
         if (src == dest) return null;
-        sageakstra(src, dest);
-        return sageakstra(src, dest).path;
+        saGeekyStria(src, dest);
+        return saGeekyStria(src, dest).path;
     }
 
     @Override
     public NodeData center() {
-        if (!isConnected()) {
+        if (!isConnected())
             return null;
-        }
-        NodeData center = new Node();
-        double best_path = Integer.MAX_VALUE;      // initialize all the parameters we need
-        double max_path = Integer.MIN_VALUE;
-        Node[] dests = new Node[graph.nodeSize()]; // since we want control of knowing what nodes we are working we used the for each loop to insert all the nodes to the arr and now we can use the arr index as anew id to have the control back
-        int k=0;
-        for(NodeData e:((Graph)graph).getNodesMap().values()) {
-            dests[k] = (Node) e;
-            k++;
-        }
-        for(int i=0;i< dests.length;i++){       // and again here we'r just comparing the results to take the lowest dstance and get the center node
-            max_path=maxDistance(dests[i]);
-            if (max_path<best_path){
-                center=dests[i];
-                best_path =max_path;
+        NodeData center = null;
+        double best_path = Integer.MAX_VALUE;
+        double max_path;
+        Iterator nodeIter = getGraph().nodeIter();
+        while (nodeIter.hasNext()) {
+            Node n = (Node) nodeIter.next();
+            max_path = maxDistance(n);
+            if (max_path < best_path) {
+                center = n;
+                best_path = max_path;
             }
         }
         return center;
@@ -252,35 +297,28 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
 
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
-        isConnected();
-        boolean end= false;
+
         int amountCities = cities.size();
-        Map<Integer, Tsp[]> cityTOtsp = tspMapInitl(cities);
+        Map<Integer, Tsp[]> cityToTsp = tspMapInit(cities);
         List<NodeData> res;
-        ArrayList<Node> visited= new ArrayList<>();
-
+        ArrayList<Node> visited = new ArrayList<>();
         Node src = (Node) cities.get(0);
-        Node temp ;
-        res=getMin(cityTOtsp.get(src.getKey()),src.getKey(),visited).getPath();
-        while(!visited.contains(src)){
-            temp=(Node) res.get(res.size()-1);
+        Node temp;
+        res = getMin(cityToTsp.get(src.getKey()), src.getKey(), visited).getPath();
+        while (!visited.contains(src)) {
+            temp = (Node) res.get(res.size() - 1);
             visited.add(temp);
-            Tsp[] tspArr = cityTOtsp.get(temp.getKey());
-            if(visited.size()==amountCities-1){
-                for(int i=0;i<tspArr.length;i++) {
+
+            Tsp[] tspArr = cityToTsp.get(temp.getKey());
+            if (visited.size() == amountCities - 1) {
+                for (int i = 0; i < tspArr.length; i++) {
                     if (tspArr[i].getDest() == src.getKey()) {
-                        List<NodeData> homecoming = tspArr[i].getPath();
-
-                        for (int k = 1; k < homecoming.size(); k++) {
-                            res.add(homecoming.get(k));
-
-                        }
                         return res;
                     }
                 }
             }
-            List<NodeData> tempList=getMin(tspArr,src.getKey(),visited).getPath();
-            for(int i=1;i<tempList.size();i++){
+            List<NodeData> tempList = getMin(tspArr, src.getKey(), visited).getPath();
+            for (int i = 1; i < tempList.size(); i++) {
                 res.add(tempList.get(i));
             }
         }
@@ -316,12 +354,14 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
         }
         return false;
     }
+
     /**
      * @param file - file name of JSON file
      * @return
      */
     @Override
     public boolean load(String file) {
+        connect = -1;
         try {
             Object obj = new JSONParser().parse(new FileReader(file));
             JSONObject JsonObj = (JSONObject) obj;
@@ -356,17 +396,12 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    public void print() {
-        Iterator it = graph.nodeIter();
-        while (it.hasNext())
-            System.out.println(((Node) it.next()).print());
-    }
 
     @Override
     public String toString() {
@@ -374,4 +409,10 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
                 "graph=" + graph +
                 '}';
     }
+
+
 }
+
+
+
+

@@ -1,7 +1,4 @@
 package GUI;
-
-import api.DirectedWeightedGraph;
-
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
@@ -27,6 +24,7 @@ public class MenuListen implements ActionListener, MenuListener {
         if (e.getActionCommand() == "Help Prompt") {
             new HelpPrompt();
         }
+
         if (e.getActionCommand() == "Readme github") {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
                 try {
@@ -44,7 +42,7 @@ public class MenuListen implements ActionListener, MenuListener {
 
         if (e.getActionCommand() == "Load graph") {
             JFileChooser chooser = new JFileChooser();
-            chooser.setDialogTitle("Hello");
+            chooser.setDialogTitle("Load file");
             chooser.setCurrentDirectory(new java.io.File("./src/data"));
             chooser.setSelectedFile(new File(""));
             chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);

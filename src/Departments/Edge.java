@@ -14,6 +14,7 @@ public class Edge implements EdgeData, Comparable<Point2D> {
     private String info;
     private int tag;
     private Line2D lineDraw;
+    private Line2D[] arrowDraw;
     private Color edgeColor;
     private Color arrowColor;
     private Point2D p;
@@ -24,6 +25,7 @@ public class Edge implements EdgeData, Comparable<Point2D> {
         this.src = src;
         this.w = w;
         this.dest = dest;
+        arrowDraw=new Line2D[2];
         edgeColor = Color.BLUE;
         lineDraw = null;
         arrowColor = Color.BLACK;
@@ -69,6 +71,14 @@ public class Edge implements EdgeData, Comparable<Point2D> {
 
     public void setArrowColor(Color arrowColor) {
         this.arrowColor = arrowColor;
+    }
+
+    public Line2D[] getArrowDraw() {
+        return arrowDraw;
+    }
+
+    public void setArrowDraw(Line2D[] arrowDraw) {
+        this.arrowDraw = arrowDraw;
     }
 
     //-------------------------------- Override -------------------------------------

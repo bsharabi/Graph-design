@@ -145,6 +145,10 @@ public class Node implements Comparator<Node>, NodeData {
         this.pointDraw = pointDraw;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     //-------------------------------- Function -------------------------------------
     public void initDrawColor() {
         setVertexState(Color.red);

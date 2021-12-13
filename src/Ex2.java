@@ -11,8 +11,7 @@ import javax.swing.*;
  */
 public class Ex2 {
     public static void main(String[] args) {
-        runGUI("src/data/G1.json");
-
+        runGUI("src/data/" + args[0]);
     }
 
     /**
@@ -52,7 +51,6 @@ public class Ex2 {
         } catch (ClassNotFoundException | InstantiationException
                 | IllegalAccessException | UnsupportedLookAndFeelException e) {
         }
-
         new Thread(new Graph_GUI(alg), "GUI-D").start();
     }
 }

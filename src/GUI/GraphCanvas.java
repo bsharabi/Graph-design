@@ -1,4 +1,5 @@
 package GUI;
+
 import Departments.Edge;
 import Departments.GeoPosition;
 import Departments.Graph;
@@ -38,7 +39,6 @@ public class GraphCanvas extends JPanel implements MouseListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         findMinMaxPos();
-
         double absX = Math.abs(minX - maxX);
         double absY = Math.abs(minY - maxY);
         double sX = (getWidth() / ((absX == 0) ? 1 : absX)) * 0.95;
@@ -63,6 +63,7 @@ public class GraphCanvas extends JPanel implements MouseListener {
             g2.setFont(new Font("Dialog", Font.BOLD, 18));
             g2.drawString(node.getKey() + "", (int) x - 15, (int) y - 10);
         }
+
         g2.setStroke(new BasicStroke(5));
         ItNode = graph.nodeIter();
 
@@ -83,6 +84,7 @@ public class GraphCanvas extends JPanel implements MouseListener {
                 drawArrowHead(g2, ne, sw, edge);
             }
         }
+
     }
     //------------------------------ Functions ---------------------------------
 
@@ -128,15 +130,24 @@ public class GraphCanvas extends JPanel implements MouseListener {
 
     }
 
-
     //-------------------------------------- Override ------------------------------------
     @Override
     public void mouseClicked(MouseEvent e) {
         double x = e.getX();
         double y = e.getY();
+        String inputNum;
         if (gui.buttonF) {
-            gui.getAlgo().getGraph().addNode(new Node(new GeoPosition(x, y, 0), gui.getAlgo().getGraph().nodeSize()));
-            gui.repaint();
+            inputNum = JOptionPane.showInputDialog("Enter node Number ");
+            if (!inputNum.matches("^[0-9]\\d*(\\.\\d+)?$")) {
+                JOptionPane.showMessageDialog(gui, "Please enter a valid name containing: numbers");
+            } else {
+                if (((Graph) gui.getAlgo().getGraph()).getNodesMap().containsKey(Integer.parseInt(inputNum))) {
+                    JOptionPane.showMessageDialog(gui, "the node does exist");
+                } else {
+                    gui.getAlgo().getGraph().addNode(new Node(new GeoPosition(x, y, 0), Integer.parseInt(inputNum)));
+                    gui.repaint();
+                }
+            }
         }
     }
 

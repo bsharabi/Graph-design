@@ -143,7 +143,7 @@ public class ButtonListener implements ActionListener {
             List<NodeData> l = new ArrayList();
             String[] input;
             boolean keyFlag = true;
-            input = JOptionPane.showInputDialog("Enter node x pos ").split(",");
+            input = JOptionPane.showInputDialog("Enter cities like 1,2,5,7....").split(",");
             int key;
             for (int i = 0; i < input.length; i++) {
                 input[i] = input[i].trim();

@@ -11,7 +11,7 @@ import javax.swing.*;
  */
 public class Ex2 {
     public static void main(String[] args) {
-        runGUI("src/data/" + args[0]);
+        runGUI(args[0]);
     }
 
     /**

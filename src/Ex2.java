@@ -13,7 +13,6 @@ public class Ex2 {
     public static void main(String[] args) {
         runGUI(args[0]);
     }
-
     /**
      * This static function will be used to test your implementation
      *

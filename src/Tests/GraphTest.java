@@ -6,10 +6,12 @@ import Departments.GeoPosition;
 import Departments.Node;
 import api.DirectedWeightedGraph;
 import api.EdgeData;
+import api.NodeData;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.Iterator;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,6 +63,12 @@ class GraphTest {
         assertEquals(g1.getEdge((int)p1.getX(),(int)p1.getY()).getSrc(),g1.getNode((int)p1.getX()).getKey());
     }
 
+    @Test
+    void getEdge() {
+        g1.connect(1,6,5);
+
+        assertNotNull(g1.getEdge(1,6));
+    }
 
     @Test
     void addNode() {
@@ -74,6 +82,33 @@ class GraphTest {
         g1.connect(1,9,5);
         assertTrue(g1.getEdge(1,9)!=null);
 
+    }
+
+    @Test
+    void nodeIter() {
+        Iterator<NodeData> nodeIter= g1.nodeIter();
+        int k=0;
+        while(nodeIter.hasNext()){
+            NodeData n = nodeIter.next();
+            System.out.println(n.toString());
+            k++;
+        }
+        assertEquals(g1.nodeSize(),k);
+
+    }
+
+
+
+    @Test
+    void EdgeIter() {
+        Iterator<EdgeData> edgeIter= g1.edgeIter();
+        int k=0;
+        while(edgeIter.hasNext()){
+            EdgeData e = edgeIter.next();
+            System.out.println(e.toString());
+            k++;
+        }
+        assertEquals(g1.edgeSize(),k);
     }
 
     @Test
@@ -111,4 +146,8 @@ class GraphTest {
         assertEquals(g1.edgeSize(),17);
     }
 
+    @Test
+    void getMC() {
+        assertEquals(g1.getMC(),0);
+    }
 }

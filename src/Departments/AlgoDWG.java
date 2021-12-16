@@ -278,21 +278,45 @@ public class AlgoDWG implements DirectedWeightedGraphAlgorithms {
 
     @Override
     public NodeData center() {
-        if (!isConnected())
-            return null;
-        NodeData center = null;
-        double best_path = Integer.MAX_VALUE;
-        double max_path;
-        Iterator nodeIter = getGraph().nodeIter();
-        while (nodeIter.hasNext()) {
-            Node n = (Node) nodeIter.next();
-            max_path = maxDistance(n);
-            if (max_path < best_path) {
-                center = n;
-                best_path = max_path;
+        Map<Integer, NodeData> nodesMap = ((Graph) graph).getNodesMap();
+
+        Node bestNode = null;
+        double longetOfThShortest = Integer.MIN_VALUE;
+        Node farrest = null;
+        double bestTime = Integer.MAX_VALUE;
+        for (NodeData k : nodesMap.values()) k.setWeight(Integer.MAX_VALUE);
+        PriorityQueue<Node> pq = new PriorityQueue<Node>(((Graph) graph).getNodesMap().values().size(), new Node());
+        for (NodeData n : nodesMap.values()) {
+            for (NodeData k : nodesMap.values()) k.setWeight(Integer.MAX_VALUE);
+            pq.add((Node) n);
+            n.setWeight(0);
+            while (!pq.isEmpty()) {
+                Node u = pq.remove();
+                NodeData neighbour = null;
+                for (EdgeData e : u.getEdgeListOut()) {
+
+                    neighbour = nodesMap.get(e.getDest());
+                    if (neighbour.getWeight() > u.getWeight() + e.getWeight()) {
+                        neighbour.setWeight(u.getWeight() + e.getWeight());
+                        if (neighbour.getWeight() > longetOfThShortest) {
+                            longetOfThShortest = neighbour.getWeight();
+                            farrest = (Node) neighbour;
+                        } else if (farrest == neighbour) {
+                            longetOfThShortest = neighbour.getWeight();
+                            farrest = (Node) neighbour;
+                        }
+                        pq.add((Node) neighbour);
+                    }
+                }
             }
+
+            if (farrest.getWeight() < bestTime && farrest != n) {
+                bestTime = farrest.getWeight();
+                bestNode = (Node) n;
+            }
+
         }
-        return center;
+        return bestNode;
     }
 
     @Override

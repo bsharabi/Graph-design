@@ -39,6 +39,9 @@ class EdgeTest {
 
     }
 
+    @Test
+    void getP() {
+    }
 
     @Test
     void getSrc() {
@@ -56,4 +59,19 @@ class EdgeTest {
         assertEquals(e1.getWeight(),5);
     }
 
+    @Test
+    void getInfo() {
+    }
+
+    @Test
+    void setInfo() {
+    }
+
+    @Test
+    void getTag() {
+    }
+
+    @Test
+    void setTag() {
+    }
 }

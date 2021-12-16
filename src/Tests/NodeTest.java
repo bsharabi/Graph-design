@@ -46,6 +46,9 @@ class NodeTest {
 
     }
 
+    @Test
+    void getEdgeListIn() {
+    }
 
     @Test
     void getEdgeMapOut() {
@@ -59,6 +62,10 @@ class NodeTest {
     }
 
     @Test
+    void getEdgeMapIn() {
+    }
+
+    @Test
     void getKey() {
         assertTrue(node1.getKey()==1);
     }
@@ -69,6 +76,8 @@ class NodeTest {
         assertEquals(node1.getLocation().x(),(i).x());
         assertEquals(node1.getLocation().y(),(i).y());
         assertEquals(node1.getLocation().z(),(i).z());
+
+
 
     }
 
